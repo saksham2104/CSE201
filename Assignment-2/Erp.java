@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -7,7 +8,9 @@ public class Erp {
     public static List<Course> courses = new ArrayList<>();
     public static List<Complaint> complaints = new ArrayList<>();
 
-    public static void main(String[] args) {
+
+
+    public static void main(String[] args) throws InvalidLoginException, CourseFullException {
 
         Erp erpSystem = new Erp();
 
@@ -32,25 +35,25 @@ public class Erp {
         String[] syllabus_sem_3 = {"Generic Programming", "Directional Derivatives", "Semaphores", "Fourier Transforms", "Business"};
 
         // Courses for Semester 1
-        Course course1 = new Course("CS101", "Intro to Programming", professors.get(0), 4, 1, new ArrayList<>(), syllabusSem1[0], timings[0]);
-        Course course2 = new Course("MTH101", "Linear Algebra-I", professors.get(1), 4, 1, new ArrayList<>(), syllabusSem1[1], timings[1]);
-        Course course3 = new Course("ECE111", "Digital Circuits", professors.get(2), 4, 1, new ArrayList<>(), syllabusSem1[2], timings[2]);
-        Course course4 = new Course("DES102", "HCI", professors.get(3), 4, 1, new ArrayList<>(), syllabusSem1[3], timings[3]);
-        Course course5 = new Course("SSH101", "Communication Skills", professors.get(4), 4, 1, new ArrayList<>(), syllabusSem1[4], timings[4]);
+        Course course1 = new Course("CS101", "Intro to Programming", professors.get(0), 4, 1, new ArrayList<>(), syllabusSem1[0], timings[0],5, LocalDate.of(2024, 10, 25));
+        Course course2 = new Course("MTH101", "Linear Algebra-I", professors.get(1), 4, 1, new ArrayList<>(), syllabusSem1[1], timings[1],5,LocalDate.of(2024, 10, 25));
+        Course course3 = new Course("ECE111", "Digital Circuits", professors.get(2), 4, 1, new ArrayList<>(), syllabusSem1[2], timings[2],5,LocalDate.of(2024, 10, 25));
+        Course course4 = new Course("DES102", "HCI", professors.get(3), 4, 1, new ArrayList<>(), syllabusSem1[3], timings[3],5,LocalDate.of(2024, 10, 25));
+        Course course5 = new Course("SSH101", "Communication Skills", professors.get(4), 4, 1, new ArrayList<>(), syllabusSem1[4], timings[4],5,LocalDate.of(2024, 10, 25));
 
         // Courses for Semester 2 with prerequisites
-        Course course6 = new Course("CS102", "Data Structures", professors.get(0), 4, 2, List.of(course1), syllabus_sem_2[0], timings[0]); // Prerequisite: CS101
-        Course course7 = new Course("CS120", "Computer Organisation", professors.get(1), 4, 2, List.of(course2), syllabus_sem_2[1], timings[1]); // Prerequisite: MTH101
-        Course course8 = new Course("ECE113", "Basic Electronics", professors.get(2), 4, 2, List.of(course3), syllabus_sem_2[2], timings[2]); // Prerequisite: ECE111
-        Course course9 = new Course("MTH102", "Probability and Statistics", professors.get(3), 4, 2, List.of(course2), syllabus_sem_2[3], timings[3]); // Prerequisite: MTH101
-        Course course10 = new Course("ECO101", "Money and Banking", professors.get(4), 4, 2, List.of(course2), syllabus_sem_2[4], timings[4]); // Prerequisite: MTH101
+        Course course6 = new Course("CS102", "Data Structures", professors.get(0), 4, 2, List.of(course1), syllabus_sem_2[0], timings[0],5,LocalDate.of(2024, 10, 25)); // Prerequisite: CS101
+        Course course7 = new Course("CS120", "Computer Organisation", professors.get(1), 4, 2, List.of(course2), syllabus_sem_2[1], timings[1],5,LocalDate.of(2024, 10, 25)); // Prerequisite: MTH101
+        Course course8 = new Course("ECE113", "Basic Electronics", professors.get(2), 4, 2, List.of(course3), syllabus_sem_2[2], timings[2],5,LocalDate.of(2024, 10, 25)); // Prerequisite: ECE111
+        Course course9 = new Course("MTH102", "Probability and Statistics", professors.get(3), 4, 2, List.of(course2), syllabus_sem_2[3], timings[3],5,LocalDate.of(2024, 10, 25)); // Prerequisite: MTH101
+        Course course10 = new Course("ECO101", "Money and Banking", professors.get(4), 4, 2, List.of(course2), syllabus_sem_2[4], timings[4],5,LocalDate.of(2024, 10, 25)); // Prerequisite: MTH101
 
         // Courses for Semester 3 with prerequisites
-        Course course11 = new Course("CS201", "Advanced Programming", professors.get(0), 4, 3, List.of(course6), syllabus_sem_3[0], timings[0]); // Prerequisite: CS102
-        Course course12 = new Course("MTH201", "Multivariate Calculus", professors.get(1), 4, 3, List.of(course7), syllabus_sem_3[1], timings[1]); // Prerequisite: MTH102
-        Course course13 = new Course("CS203", "Operating Systems", professors.get(0), 4, 3, List.of(course6), syllabus_sem_3[2], timings[2]); // Prerequisite: CS102
-        Course course14 = new Course("ECE203", "Signals and Systems", professors.get(3), 4, 3, List.of(course8), syllabus_sem_3[3], timings[3]); // Prerequisite: ECE113
-        Course course15 = new Course("SSH201", "Business Communication", professors.get(4), 4, 3, List.of(course9), syllabus_sem_3[4], timings[4]); // Prerequisite: SSH101
+        Course course11 = new Course("CS201", "Advanced Programming", professors.get(0), 4, 3, List.of(course6), syllabus_sem_3[0], timings[0],5,LocalDate.of(2024, 10, 25)); // Prerequisite: CS102
+        Course course12 = new Course("MTH201", "Multivariate Calculus", professors.get(1), 4, 3, List.of(course7), syllabus_sem_3[1], timings[1],5,LocalDate.of(2024, 10, 25)); // Prerequisite: MTH102
+        Course course13 = new Course("CS203", "Operating Systems", professors.get(0), 4, 3, List.of(course6), syllabus_sem_3[2], timings[2],5,LocalDate.of(2024, 10, 25)); // Prerequisite: CS102
+        Course course14 = new Course("ECE203", "Signals and Systems", professors.get(3), 4, 3, List.of(course8), syllabus_sem_3[3], timings[3],5,LocalDate.of(2024, 10, 25)); // Prerequisite: ECE113
+        Course course15 = new Course("SSH201", "Business Communication", professors.get(4), 4, 3, List.of(course9), syllabus_sem_3[4], timings[4],5,LocalDate.of(2024, 10, 25)); // Prerequisite: SSH101
 
         // Adding all the courses to the courses list
         erpSystem.courses.add(course1);
@@ -106,7 +109,7 @@ public class Erp {
         scanner.close();
     }
 
-    private static void login(Scanner scanner) {
+     private static void login(Scanner scanner) throws InvalidLoginException, CourseFullException {
         System.out.print("Enter name: ");
         String username = scanner.nextLine();
 
@@ -117,13 +120,19 @@ public class Erp {
         String password = scanner.nextLine();
 
         User user = findUserByEmail(email);
+        if (user == null) {
+            throw new InvalidLoginException("Invalid Email"); // Throw exception if email is not found
 
-        if (user.verifyPassword(password)) {
-            System.out.println("Login successful!");
-            user.display();  // Show respective menu based on user type
-        } else {
-            System.out.println("Invalid email or password.");
         }
+
+        // Verify the password
+        if (!user.verifyPassword(password)) {
+            throw new InvalidLoginException("Invalid Password"); // Throw exception if password is incorrect
+        }
+
+        // If all checks pass, login is successful
+        System.out.println("Login successful!");
+        user.display(); // Show respective menu based on user type
     }
 
     private static void signUp(Scanner scanner) {
@@ -131,6 +140,7 @@ public class Erp {
         System.out.println("1. Student");
         System.out.println("2. Professor");
         System.out.println("3. Administrator");
+        System.out.println("4. TA");
         System.out.print("Select an option: ");
 
         int userType = scanner.nextInt();
@@ -165,6 +175,11 @@ public class Erp {
                 break;
             case 3:
                 System.out.println("Admin?,No need to Sign up.");
+                break;
+
+            case 4:
+                TA ta=new TA(name,email,password);
+                users.add(ta);
                 break;
             default:
                 System.out.println("Invalid user type.");
