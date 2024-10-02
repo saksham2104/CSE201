@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +28,9 @@ class Student extends User {
             System.out.println("4. View Grades");
             System.out.println("5. Drop Courses");
             System.out.println("6. Submit Complaint");
-            System.out.println("7. Logout");
+            System.out.println("7. Give feedback");
+            System.out.println("8. Assist as TA");
+            System.out.println("9. Logout");
             System.out.print("Select an option: ");
 
             int choice = scanner.nextInt();
@@ -38,38 +41,56 @@ class Student extends User {
                     viewAvailableCourses();  // Assume courses list is accessible
                     break;
                 case 2:
-                    registerForCourse(scanner);
+                    try {
+                        registerForCourse(scanner);
+                    } catch (CourseFullException e) {
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case 3:
                     viewSchedule();
                     break;
                 case 4:
-                    //give option to view SGPA and CGPA
+                    // give option to view SGPA and CGPA
                     System.out.println("Choose option\n");
-                    System.out.print("1:SGPA");
-                    System.out.print("2:CGPA");
-                    int cg_choice = scanner.nextInt();
-                    if(cg_choice==1) {
+                    System.out.print("1: SGPA\n");
+                    System.out.print("2: CGPA\n");
+                    int cgChoice = scanner.nextInt();
+                    if (cgChoice == 1) {
                         viewGrades();
-                    }
-                    else if(cg_choice==2) {
-                        if (this.semester == 1) {
-                            System.out.println("You are in 1st sem so your CGPA is equal to SGPA");
-                            viewGrades();
-                        }
-                        else if (this.semester == 2)
-                            System.out.println("Give CGPA upto previous sem ");
-                            double prev= scanner.nextDouble();
-                            cgpa(prev);
+                    } else if (cgChoice == 2) {
+                        System.out.println("Give CGPA upto previous sem ");
+                        double prev= scanner.nextDouble();
+                        cgpa(prev);
                     }
                     break;
                 case 5:
-                    dropCourse(scanner);
+                    System.out.print("Enter course code to drop: ");
+                    String code = scanner.nextLine();
+                    Course core = findCourseByCode(code);
+                    if (core == null) {
+                        System.out.print("Course not Found");
+                        break;
+                    }
+                    dropCourse(core);
                     break;
                 case 6:
                     submitComplaint(scanner);
                     break;
                 case 7:
+                    System.out.print("Enter professor's name: ");
+                    String profName = scanner.nextLine();
+                    Professor prof = findProfessorByName(profName);
+                    give_feedback(prof);
+                    break;
+
+                case 8:
+                    String codee = scanner.nextLine();
+                    Course coree = findCourseByCode(codee);
+                    String s_name= scanner.nextLine();
+                    Student studentt=findStudentByName(s_name);
+                    int ans=TA.ta_help(studentt,coree);
+                case 9:
                     studentMenu = false;
                     System.out.println("Logged out.");
                     break;
@@ -77,6 +98,28 @@ class Student extends User {
                     System.out.println("Invalid option. Please try again.");
             }
         }
+    }
+
+    private Student findStudentByName(String studentName) {
+        for (User user : Erp.users) {
+            if (user instanceof Student) {
+                if (user.getname().equalsIgnoreCase(studentName)) {
+                    return (Student) user; // Cast to Student and return
+                }
+            }
+        }
+        return null;
+    }
+
+    private static Professor findProfessorByName(String professorName) {
+        for (User user : Erp.users) {
+            if (user instanceof Professor) {
+                if (user.getname().equals(professorName)) {
+                    return (Professor) user;  // Cast to Professor before returning
+                }
+            }
+        }
+        return null;
     }
 
     public void addCourse(Course course){
@@ -91,6 +134,19 @@ class Student extends User {
         return name;
     }
 
+    public void give_feedback(Professor prof) {
+        // Give feedback to a particular professor
+        System.out.println("Give Feedback Description:");
+        Scanner scanner = new Scanner(System.in); // Initialize Scanner
+        String inp = scanner.nextLine();
+        System.out.println("Give Feedback Rating (1-5):");
+        int inpt = scanner.nextInt();
+
+        // Create a Feedback object and add it to the professor's feedback list
+        Feedback<String, Integer> feedback = new Feedback<>(inp, inpt);
+        prof.feedbacks.add(feedback);
+    }
+
     public void viewAvailableCourses() {
         // Placeholder for viewing courses
         System.out.println("Available Courses:");
@@ -101,17 +157,23 @@ class Student extends User {
         }
     }
 
-    public void registerForCourse(Scanner scanner) {
+    public void registerForCourse(Scanner scanner) throws CourseFullException{
         System.out.print("Enter course code to register: ");
         String courseCode = scanner.nextLine();
         Course course = findCourseByCode(courseCode);
+        if(course==null){
+            System.out.println("Course not found or already registered.");
+            return;
+        }
 
-        if (course != null && !is_enrolled(course)) {
+        if(course.getEnrolledStudents()==course.getCapacity()){
+            throw(new CourseFullException("Course is Full"));
+        }
+        else{
             registeredCourses.add(course);
             System.out.println("Registered for " + course.getTitle() + " successfully.");
-        } else {
-            System.out.println("Course not found or already registered.");
         }
+
     }
 
     public void viewSchedule() {
@@ -177,16 +239,13 @@ class Student extends User {
         }
     }
 
-    public void dropCourse(Scanner scanner) {
-        System.out.print("Enter course code to drop: ");
-        String courseCode = scanner.nextLine();
-        Course course = findCourseByCode(courseCode);
-
-        if (course != null && is_enrolled(course)) {
+    public void dropCourse(Course course) {
+        LocalDate today = LocalDate.now(); // Get the current date for drop deadline check
+        try {
+            course.dropCourse(today);
             registeredCourses.remove(course);
-            System.out.println("Dropped " + course.getTitle() + " successfully.");
-        } else {
-            System.out.println("Course not found or not registered.");
+        } catch (DropDeadlinePassedException e) {
+            System.out.println(e.getMessage()); // Handle exception by printing the message
         }
     }
 
