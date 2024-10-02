@@ -4,10 +4,12 @@ import java.util.Scanner;
 
 class Professor extends User {
     public List<Course> assignedCourses;
+    public List<Feedback<String, Integer>> feedbacks; // List of Feedback objects
 
     public Professor(String name, String email, String password) {
         super(name, email, password);
         this.assignedCourses = new ArrayList<>();
+        this.feedbacks = new ArrayList<>();
     }
 
     @Override
@@ -19,7 +21,8 @@ class Professor extends User {
             System.out.println("1. View Assigned Courses");
             System.out.println("2. View Enrolled Students");
             System.out.println("3. Manage Course (Update Syllabus/Timings/Grades)");
-            System.out.println("4. Logout");
+            System.out.println("4.View Feedback");
+            System.out.println("5. Logout");
             System.out.print("Select an option: ");
 
             int choice = scanner.nextInt();
@@ -36,6 +39,9 @@ class Professor extends User {
                     manageCourse(scanner);
                     break;
                 case 4:
+                    view_feedback();
+                    break;
+                case 5:
                     flag = false;
                     System.out.println("Logged out.");
                     break;
@@ -45,8 +51,15 @@ class Professor extends User {
         }
     }
 
+    public void getTA_suggestion(){
+
+    }
+
     public void addCourse(Course course) {
         this.assignedCourses.add(course);
+    }
+    public String getname(){
+        return this.name;
     }
 
     public void viewAssignedCourses() {
@@ -100,22 +113,85 @@ class Professor extends User {
                     System.out.println("Timings updated.");
                     break;
                 case 3:
-                    System.out.println("Updating Grade:");
-                    System.out.println("Enter course code:");
-                    String code = scanner.nextLine();
-                    System.out.println("Enter student's name:");
-                    String name = scanner.nextLine();
-                    System.out.println("Enter grade (1-10):");
-                    int marks = scanner.nextInt();
+                    System.out.println("3. Get TA help in grading");
+                    System.out.println("Enter 1 for YES, 2 for NO:");
+                    int choice = scanner.nextInt();
                     scanner.nextLine(); // Consume newline
-                    update_grade(code, name, marks);
-                    break;
+
+                    if (choice == 1) {
+                        System.out.println("Enter TA's name:");
+                        String taName = scanner.nextLine();
+                        TA ta = findTaByName(taName);
+
+                        if (ta != null) {
+                            System.out.println("Enter student's name:");
+                            String studentName = scanner.nextLine();
+                            Student student = findStudentByName(studentName);
+
+                            System.out.println("Enter course code:");
+                            String courseCodee = scanner.nextLine();
+                            Course coursee=findCourseByCode(courseCodee);
+
+                            if (student != null) {
+                                int grade = ta.ta_help(student, coursee); // Get grade help from the TA
+                                update_grade(courseCodee,studentName, grade); // Update the grade
+                            } else {
+                                System.out.println("Invalid student or course.");
+                            }
+                        } else {
+                            System.out.println("TA not found.");
+                        }
+                    }
+
+                    else {
+                        System.out.println("Updating Grade:");
+                        System.out.println("Enter course code:");
+                        String code = scanner.nextLine();
+                        System.out.println("Enter student's name:");
+                        String name = scanner.nextLine();
+                        System.out.println("Enter grade (1-10):");
+                        int marks = scanner.nextInt();
+                        scanner.nextLine(); // Consume newline
+                        update_grade(code, name, marks);
+                        break;
+                    }
                 default:
                     System.out.println("Invalid option.");
                     break;
             }
         }
     }
+
+
+    private TA findTaByName(String taName) {
+        for (User user : Erp.users) {
+            if (user instanceof TA) {
+                if (user.getname().equalsIgnoreCase(taName)) {
+                    return (TA) user;
+                }
+            }
+        }
+        return null;
+    }
+
+    private Course findCourseByCode(String courseCode) {
+        for (Course course : Erp.courses) {
+            if (course.getCourseCode().equalsIgnoreCase(courseCode)) {
+                return course;
+            }
+        }
+        return null;
+    }
+
+
+    public void view_feedback() {
+        System.out.println("Feedback details:");
+        for (Feedback<String, Integer> feedback : feedbacks) {
+            System.out.println(feedback);
+        }
+        System.out.println();
+    }
+
 
     public void update_grade(String code, String name, Integer marks) {
         Student student = findStudentByName(name);
