@@ -12,6 +12,9 @@ abstract class User {
         this.email = email;
         this.password = password;
     }
+    public String getname(){
+        return this.name;
+    }
 
     public String getEmail() {
         return email;
@@ -25,5 +28,5 @@ abstract class User {
         return this.password.equals(inputPassword);
     }
 
-    public abstract void display();
+    public abstract void display() throws CourseFullException;
 }
