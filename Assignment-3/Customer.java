@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 
 public class Customer {
@@ -7,7 +8,7 @@ public class Customer {
     List<Food_item> order_history = new ArrayList<Food_item>();
     private int status;// 0 for regular 1 for VIP
 
-
+    Scanner scanner=new Scanner(System.in);
     public void view_menu(Menu menu){
         List<Food_item> items =menu.getList();
         for(Food_item item:items){
@@ -20,7 +21,7 @@ public class Customer {
         for(Food_item item:items){
             if(item.getName().toLowerCase().contains(search.toLowerCase())){
                 System.out.println(item+" ");
-                System.out.println("availability"+item.availability);
+                System.out.println("availability"+item.stock);
             }
         }
     }
@@ -47,7 +48,17 @@ public class Customer {
     }
 
     public void add_review(Food_item item){
-        // add review
+        System.out.print("Enter your name:");
+        String name = scanner.nextLine();
+        System.out.println("Enter review for:"+item.name+":"+"\n");
+        String review =scanner.nextLine();
+        Review review1=new Review(name,review);
+        Main.reviews.add(review1);
+    }
+    public void view_reviews(){
+        for(Review review:Main.reviews){
+            System.out.println(review+"\n");
+        }
     }
 
 }
