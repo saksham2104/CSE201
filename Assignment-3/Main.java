@@ -351,38 +351,18 @@ public class Main {
                     int choice1=scanner.nextInt();
                     scanner.nextLine();
                     if(choice1 == 1){
-                        if(customer.order_history.isEmpty()){
-                            System.out.println("None of your orders have been delivered yet hence you cannot give review");
-                        }
-                        else{
-                            System.out.println("Order History: ");
-                            for(Food_item item: customer.getOrder_history()){
-                                System.out.println("Item Name: " +item.getName() + " Item Price: "+item.getPrice()+ "   "+  "Quantity: "+item.getQuantity());
-                            }
-                            System.out.println("Enter a food item from the above: ");
-                            String item=scanner.nextLine();
-                            Food_item food=search_item_by_name(item);
-                            int flag=0;
-                            for(Food_item itemz: customer.getOrder_history()){
-                                if(itemz.getName().equalsIgnoreCase(food.getName())){
-                                    flag=1;
-                                    break;
-                                }
-                            }
-                            if(flag == 0){
-                                System.out.println("You have never tried this give it a shot then leave us a Review!");
-                            }
-                            else if(flag == 1){
-                                //leave a review
-                                System.out.println("Give Review Description:");
-                                String description=scanner.nextLine();
-                                System.out.println("Add Rating (1-10)");
-                                double rating=scanner.nextDouble();
-                                scanner.nextLine();
-                                Review review=new Review(customer,description,rating);
-                            }
-                        }
+                        System.out.println("Enter a food item : ");
+                        String item=scanner.nextLine();
+                        //leave a review
+                        System.out.println("Give Review Description:");
+                        String description=scanner.nextLine();
+                        System.out.println("Add Rating (1-10)");
+                        double rating=scanner.nextDouble();
+                        scanner.nextLine();
+                        Review review=new Review(customer,description,rating);
                     }
+
+
                     else if(choice1 == 2){
                         System.out.println("View All Reviews: ");
                         for(Review review:reviews){
@@ -392,7 +372,7 @@ public class Main {
                         }
                     }
 
-                }
+            }
 
                 else if (choice == 9) {
                     System.out.println("Goodbye");
