@@ -1,6 +1,10 @@
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class Main {
@@ -17,7 +21,7 @@ public class Main {
     public static HashMap<String,String>verify=new HashMap<>();
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidLoginException {
         Menu menu1 = new Menu();
 
         Food_item food_1 = new Food_item("Samosa", "Snacks", 10.00, 5);
@@ -87,16 +91,16 @@ public class Main {
             }
     }
 
-    private static void login () {
+    private static void login() throws InvalidLoginException {
             System.out.println("Enter your Name:");
             String name = scanner.nextLine();
             System.out.println("Enter your Password:");
             String password = scanner.nextLine();
-            if(!verify.get(name).equals(password)) {
-                System.out.println("Invalid Login");
-                System.out.println("Try Again:");
-                return;
+
+            if(!verify.get(name).equals(password) || !verify.containsKey(name)) {
+                throw new InvalidLoginException("Invalid Username or Password");
             }
+
             if ((verify.get(name).equals(password)) && database.containsKey(name)) {
                 if (database.get(name).equals("Admin")) {
                     System.out.println("Logged in as Admin");
@@ -214,6 +218,32 @@ public class Main {
                     for(Food_item item:menu){
                         System.out.println("Item Name: "+ item.getName()+"     "+"Price: "+item.getPrice()+ "    "+   "Availability:"+item.getStock()+"\n");
                     }
+
+                    // Create Frame
+                    JFrame frame = new JFrame("Canteen Menu");
+                    frame.setSize(600, 400);
+                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    frame.setLayout(new BorderLayout());
+
+                    // Table to Display Menu
+                    String[] columns = {"Name", "Category", "Price", "Stock"};
+                    DefaultTableModel tableModel = new DefaultTableModel(columns, 0);
+                    JTable menuTable = new JTable(tableModel);
+                    menuTable.setEnabled(false); // Make table non-editable
+
+                    // Populate Table with Menu Items
+                    for (Food_item item : menu) {
+                        Object[] row = {item.name, item.category, item.price, item.stock};
+                        tableModel.addRow(row);
+                    }
+
+                    JScrollPane scrollPane = new JScrollPane(menuTable);
+                    frame.add(scrollPane, BorderLayout.CENTER);
+
+
+                    frame.setVisible(true);
+
+
                 }
                 else if (choice == 2) {
                     //SEARCH BUTTON
@@ -494,7 +524,37 @@ public class Main {
                         for(Order order: pending_orders){
                             System.out.println("Name of the Customer: "+order.getCustomer().getName() +" Order ID: "+order.getOrderId()+" Status: " + order.getOrder_status());
                         }
+
+                        JFrame frame = new JFrame("Pending Orders");
+                        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        frame.setSize(600, 400);
+
+                        // Table to display pending orders
+                        String[] columnNames = {"Order ID", "Items Ordered", "Order Status"};
+                        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+                        JTable table = new JTable(tableModel);
+
+                        // Populate table with pending orders data
+                        for (Order order : pending_orders) {
+                            String orderNumber = String.valueOf(order.getOrderId());
+                            String itemsOrdered=""; // Helper function to format items
+                            List<Food_item>list=order.getCustomer().getCart().getList();
+                            for(Food_item item:list){
+                                itemsOrdered+=item.getName()+" , "+"\n";
+                            }
+                            String status = order.getOrder_status();
+                            tableModel.addRow(new String[]{orderNumber, itemsOrdered, status});
+                        }
+
+                        // Add table to scroll pane
+                        JScrollPane scrollPane = new JScrollPane(table);
+                        frame.add(scrollPane, BorderLayout.CENTER);
+
+                        // Show the GUI
+                        frame.setVisible(true);
+
                     }
+
                     else if (choice4 == 2) {
                         //update order status for a particular order
                         System.out.println("Enter Order ID:");
