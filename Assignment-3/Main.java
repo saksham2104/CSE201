@@ -19,6 +19,32 @@ public class Main {
 
     public static void main(String[] args) {
         Menu menu1 = new Menu();
+
+        Food_item food_1 = new Food_item("Samosa", "Snacks", 10.00, 5);
+        menu.add(food_1);
+        FoodItems.put(food_1.getName(), food_1);
+        Food_item food_2 = new Food_item("Veg Patties", "Snacks", 20.00, 5);
+        menu.add(food_2);
+        FoodItems.put(food_2.getName(), food_2);
+        Food_item food_3 = new Food_item("Honey Chilli Potato", "Snacks", 40.00, 5);
+        menu.add(food_3);
+        FoodItems.put(food_3.getName(), food_3);
+        Food_item food_4 = new Food_item("Coca-Cola", "Beverages", 20.00, 5);
+        menu.add(food_4);
+        FoodItems.put(food_4.getName(), food_4);
+        Food_item food_5 = new Food_item("Limca", "Beverages", 20.00, 5);
+        menu.add(food_5);
+        FoodItems.put(food_5.getName(), food_5);
+        Food_item food_6 = new Food_item("Veg Thali", "Meals", 40.00, 5);
+        menu.add(food_6);
+        FoodItems.put(food_6.getName(), food_6);
+        Food_item food_7 = new Food_item("Non Veg Thali", "Meals", 50.00, 5);
+        menu.add(food_7);
+        FoodItems.put(food_7.getName(), food_7);
+        Food_item food_8 = new Food_item("Cake", "Desserts", 15.00, 5);
+        menu.add(food_8);
+        FoodItems.put(food_8.getName(), food_8);
+
         menu1.setList(menu);
         while (true) {
             System.out.println("1.Signup\n" + "2.Login\n" + "3.Exit");
@@ -32,35 +58,8 @@ public class Main {
                 System.out.println("Goodbye");
                 break;
             }
-
-            Food_item food_1 = new Food_item("Samosa", "Snacks", 10.00, 5);
-            menu.add(food_1);
-            FoodItems.put(food_1.getName(), food_1);
-            Food_item food_2 = new Food_item("Veg Patties", "Snacks", 20.00, 5);
-            menu.add(food_2);
-            FoodItems.put(food_2.getName(), food_2);
-            Food_item food_3 = new Food_item("Honey Chilli Potato", "Snacks", 40.00, 5);
-            menu.add(food_3);
-            FoodItems.put(food_3.getName(), food_3);
-            Food_item food_4 = new Food_item("Coca-Cola", "Beverages", 20.00, 5);
-            menu.add(food_4);
-            FoodItems.put(food_4.getName(), food_4);
-            Food_item food_5 = new Food_item("Limca", "Beverages", 20.00, 5);
-            menu.add(food_5);
-            FoodItems.put(food_5.getName(), food_5);
-            Food_item food_6 = new Food_item("Veg Thali", "Meals", 40.00, 5);
-            menu.add(food_6);
-            FoodItems.put(food_6.getName(), food_6);
-            Food_item food_7 = new Food_item("Non Veg Thali", "Meals", 50.00, 5);
-            menu.add(food_7);
-            FoodItems.put(food_7.getName(), food_7);
-            Food_item food_8 = new Food_item("Cake", "Desserts", 15.00, 5);
-            menu.add(food_8);
-            FoodItems.put(food_8.getName(), food_8);
-
         }
     }
-
 
     private static void signup () {
             System.out.println("Are you a:\n 1.Admin\n 2.Customer\n");
@@ -73,6 +72,8 @@ public class Main {
                 String password = scanner.nextLine();
                 verify.put(name,password);
                 database.put(name, "Admin");
+                Admin admin = new Admin(name);
+                User.addAdmin(name, admin);
             } else if (choice1 == 2) {
                 System.out.println("Enter your Name:");
                 String name = scanner.nextLine();
@@ -80,6 +81,9 @@ public class Main {
                 String password = scanner.nextLine();
                 verify.put(name,password);
                 database.put(name, "Customer");
+                List<Food_item> list = new ArrayList<>();
+                Customer customer = new Customer(name, list, 0);
+                User.addCustomer(name, customer);
             }
     }
 
@@ -96,13 +100,13 @@ public class Main {
             if ((verify.get(name).equals(password)) && database.containsKey(name)) {
                 if (database.get(name).equals("Admin")) {
                     System.out.println("Logged in as Admin");
-                    Admin admin=new Admin(name);
+                    Admin admin=User.getAdmin(name);
                     admin_functionalities(admin);
                 }
                 else if (database.get(name).equals("Customer")) {
                     System.out.println("Logged in as Customer");
                     List<Food_item>list=new ArrayList<>();
-                    Customer customer = new Customer(name,list,0);
+                    Customer customer=User.getCustomer(name);
 
                     if(customer.getStatus() == 0){
                         System.out.println("You are a Regular Customer,Upgrade to a VIP Customer by Just 30 Bucks for 3 months");
@@ -405,9 +409,6 @@ public class Main {
                     scanner.nextLine();
                     if (choice2 == 1) {
                         //ADD ITEM
-                        for(Food_item item:menu){
-                            System.out.println(item.getName());
-                        }
                         System.out.println("Enter item name:");
                         String name = scanner.nextLine();
                         System.out.println("Enter item price:");
@@ -456,7 +457,8 @@ public class Main {
                         scanner.nextLine();
                         if (choice3 == 1) {
                             System.out.println("Enter new name for this item:");
-                            item.setName(name);
+                            String namee=scanner.nextLine();
+                            item.setName(namee);
                         }
                         else if (choice3 == 2) {
                             System.out.println("Enter new price for this item:");
