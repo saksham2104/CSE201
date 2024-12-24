@@ -1,0 +1,8 @@
+Cart for user: Random1
+===========================
+Item Name: Samosa
+Quantity: 1
+Price per item: 10.0
+Total Price: 10.0
+---------------------------
+Cart Total: 10.0
